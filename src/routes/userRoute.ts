@@ -3,8 +3,8 @@ import { getProfile, getUserbyId, createUser, hello } from "../controllers/userC
 
 const router = Router();
 
-router.get("/profile", getProfile);
-router.get("/profile/:name", getUserbyId);
+router.get("/", getProfile);
+router.get("/:name", getUserbyId);
 router.post("/login", createUser);
 router.get("/hello", hello);
 

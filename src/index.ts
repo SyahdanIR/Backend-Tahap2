@@ -1,11 +1,11 @@
 import express from "express";
-import userRoute from "./routes/userRoute";
+import mainRoute from "./routes/index";
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use('/', userRoute);
+app.use('/', mainRoute);
 
 
 app.listen(port, () => {

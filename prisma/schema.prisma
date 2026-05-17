@@ -18,4 +18,15 @@ model Product {
   stock Int
   description String?
   CreatedAt DateTime @default(now())
+  userId Int
+  author user @relation(fields: [userId], references: [id])
+}
+
+model user {
+  id Int @id @default(autoincrement())  
+  name String
+  email String @unique
+  password String
+  products Product[]
+  createdAt DateTime @default(now())
 }

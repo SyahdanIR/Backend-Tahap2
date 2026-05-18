@@ -1,30 +1,33 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import prisma from "../lib/prisma";
 
-export const createProduct = async (req: Request, res: Response) => {
+export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, price, stock, description } = req.body;
+    const { name, price, stock, description, userId } = req.body;
     const newProduct = await prisma.product.create({
       data: {
         name: name,
         price: Number(price),
         stock: Number(stock),
         description: description,
+        userId: Number(userId),
       },
     });
     return res.status(201).json({
       message: "Product created successfully",
       data: newProduct,
     });
-  } catch (error) {
-    res.status(500).json({
-      message: "Failed to create product",
-      error: error.message,
-    });
+  } catch (error: any) {
+    error.message = "Something went wrong";
+    next(error);
   }
 };
 
-export const getAllProducts = async (req: Request, res: Response) => {
+export const getAllProducts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { search, minPrice, sortBy } = req.query;
 
@@ -40,7 +43,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
           mode: "insensitive",
         },
         price: {
-          gte: minPrice ? Number(minPrice) : 0
+          gte: minPrice ? Number(minPrice) : 0,
         },
       },
       take: limit,
@@ -71,15 +74,17 @@ export const getAllProducts = async (req: Request, res: Response) => {
       },
       data: products,
     });
-  } catch (error) {
-    res.status(500).json({
-      message: "Failed to fetch products",
-      error: error,
-    });
+  } catch (error: any) {
+    error.message = "Something went wrong";
+    next(error);
   }
 };
 
-export const getProductById = async (req: Request, res: Response) => {
+export const getProductById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { id } = req.params;
     const product = await prisma.product.findUnique({
@@ -96,18 +101,16 @@ export const getProductById = async (req: Request, res: Response) => {
       message: "Product fetched successfully",
       data: product,
     });
-  } catch (error) {
-    res.status(500).json({
-      message: "Failed to fetch product",
-      error: error,
-    });
+  } catch (error: any) {
+    error.message = "Something went wrong";
+    next(error);
   }
 };
 
-export const updateProduct = async (req: Request, res: Response) => {
+export const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const { name, price, stock, description } = req.body;
+    const { name, price, stock, description, userId } = req.body;
     const product = await prisma.product.update({
       where: {
         id: Number(id),
@@ -117,21 +120,20 @@ export const updateProduct = async (req: Request, res: Response) => {
         price: Number(price),
         stock: Number(stock),
         description: description,
+        userId: Number(userId),
       },
     });
     return res.status(200).json({
       message: "Product updated successfully",
       data: product,
     });
-  } catch (error) {
-    res.status(500).json({
-      message: "Failed to update product",
-      error: error,
-    });
+  } catch (error: any) {
+    error.message = "Something went wrong";
+    next(error);
   }
 };
 
-export const deleteProduct = async (req: Request, res: Response) => {
+export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const product = await prisma.product.delete({
@@ -143,10 +145,8 @@ export const deleteProduct = async (req: Request, res: Response) => {
       message: "Product deleted successfully",
       data: product,
     });
-  } catch (error) {
-    res.status(500).json({
-      message: "Failed to delete product",
-      error: error,
-    });
+  } catch (error: any) {
+    error.message = "Something went wrong";
+    next(error);
   }
 };

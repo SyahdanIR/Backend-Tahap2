@@ -28,5 +28,6 @@ model user {
   email String @unique
   password String
   products Product[]
+  point Int @default(0)
   createdAt DateTime @default(now())
 }

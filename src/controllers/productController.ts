@@ -3,7 +3,9 @@ import prisma from "../lib/prisma";
 
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, price, stock, description, userId } = req.body;
+    const { name, price, stock, description} = req.body;
+    const userId = (req as any).user.id;
+    const image = req.file ? req.file.filename : null;
     const newProduct = await prisma.product.create({
       data: {
         name: name,
@@ -11,6 +13,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
         stock: Number(stock),
         description: description,
         userId: Number(userId),
+        image,
       },
     });
     return res.status(201).json({

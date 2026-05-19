@@ -1,12 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import prisma from "../lib/prisma";
 
-export const getProfile = (req: Request, res: Response) => {
-  return res.json({
-    id: 1,
-    name: "John Doe",
-    email: "johndoe@example.com",
-  });
+export const getProfile = async (req: Request, res: Response) => {
+  const profile = await prisma.user.findMany();
+  return res.json(profile);
 };
 
 export const getUserbyId = (req: Request, res: Response) => {
